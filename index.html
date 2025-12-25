@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>rozshuk.ua — База розшуку</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f7fb;color:#111}
+header{background:#0b5ed7;color:#fff;padding:15px 30px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:26px;font-weight:bold}
+nav a{color:#fff;margin-left:20px;text-decoration:none;font-weight:bold;cursor:pointer}
+.container{max-width:1000px;margin:30px auto;padding:20px}
+.section-title{font-size:26px;color:#0b5ed7;margin:25px 0 10px}
+.card{background:#fff;border:2px solid #0b5ed7;padding:12px;border-radius:8px;margin-bottom:10px;cursor:pointer}
+.card.danger{border-color:#dc3545}
+.person{display:flex;gap:14px;align-items:center}
+.photo{width:110px;height:140px;background:#000;border-radius:4px}
+.hidden{display:none}
+.loading{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;color:#0b5ed7;z-index:9999}
+.badge{display:inline-block;padding:4px 8px;border-radius:6px;font-size:12px;color:#fff;background:#dc3545;margin-top:6px}
+.badge.normal{background:#198754}
+.footer{margin-top:40px;color:#555;font-size:13px}
+.search{margin:10px 0}
+.search input{width:100%;padding:10px;border-radius:6px;border:1px solid #ccc}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center}
+.modal-content{background:#fff;border-radius:10px;padding:20px;max-width:520px;width:90%}
+.modal h3{margin-top:0;color:#0b5ed7}
+.btn{background:#0b5ed7;color:#fff;border:none;padding:10px 14px;border-radius:6px;cursor:pointer}
+.btn.secondary{background:#6c757d}
+.note{margin-top:10px;color:#555;font-size:14px}
+</style>
+</head>
+<body>
+
+<div class="loading" id="loading">Завантаження бази даних…</div>
+
+<header>
+  <div class="logo">rozshuk.ua</div>
+  <nav>
+    <a onclick="showTab('rozisk')">Розшук</a>
+    <a onclick="showTab('info')">Інфо</a>
+  </nav>
+</header>
+
+<div class="container" id="tab-rozisk">
+  <div class="search">
+    <input id="search" placeholder="Пошук за ім’ям…" oninput="doSearch()">
+  </div>
+
+  <div class="section-title">Особливо небезпечні</div>
+  
+  <div class="card person danger" data-name="даня ростек" onclick="openProfile('Даня Ростек','16','Одеса','Особливо небезпечний','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Даня Ростек</b><br>
+      Вік: 16<br>
+      Місто: Одеса<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge ">Особливо небезпечний</span>
+    </div>
+  </div>
+
+
+  <div class="section-title">У розшуку</div>
+  
+  <div class="card person " data-name="владислав івашко" onclick="openProfile('Владислав Івашко','26','Чернігів','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Владислав Івашко</b><br>
+      Вік: 26<br>
+      Місто: Чернігів<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="степан давиденко" onclick="openProfile('Степан Давиденко','21','Луцьк','У розшуку','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Степан Давиденко</b><br>
+      Вік: 21<br>
+      Місто: Луцьк<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="роман волошин" onclick="openProfile('Роман Волошин','19','Суми','У розшуку','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Роман Волошин</b><br>
+      Вік: 19<br>
+      Місто: Суми<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="сергій сорока" onclick="openProfile('Сергій Сорока','42','Полтава','У розшуку','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Сергій Сорока</b><br>
+      Вік: 42<br>
+      Місто: Полтава<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="кирил вертейко" onclick="openProfile('Вертейко','13','Одеська Область','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Кирил вертейко</b><br>
+      Вік: 13<br>
+      Місто: Одеська Область<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="федір левчук" onclick="openProfile('Федір Левчук','17','Київ','У розшуку','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Федір Левчук</b><br>
+      Вік: 17<br>
+      Місто: Київ<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="семен волошин" onclick="openProfile('Семен Волошин','21','Рівне','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Семен Волошин</b><br>
+      Вік: 21<br>
+      Місто: Рівне<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="арсен литвин" onclick="openProfile('Арсен Литвин','35','Луцьк','У розшуку','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Арсен Литвин</b><br>
+      Вік: 35<br>
+      Місто: Луцьк<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="остап захарчук" onclick="openProfile('Остап Захарчук','32','Чернігів','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Остап Захарчук</b><br>
+      Вік: 32<br>
+      Місто: Чернігів<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="мирон волошин" onclick="openProfile('Мирон Волошин','31','Миколаїв','У розшуку','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Мирон Волошин</b><br>
+      Вік: 31<br>
+      Місто: Миколаїв<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="остап нечай" onclick="openProfile('Остап Нечай','28','Запоріжжя','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Остап Нечай</b><br>
+      Вік: 28<br>
+      Місто: Запоріжжя<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="назар литвин" onclick="openProfile('Назар Литвин','29','Львів','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Назар Литвин</b><br>
+      Вік: 29<br>
+      Місто: Львів<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="дмитро ткач" onclick="openProfile('Дмитро Ткач','38','Харків','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Дмитро Ткач</b><br>
+      Вік: 38<br>
+      Місто: Харків<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="михайло савицький" onclick="openProfile('Михайло Савицький','38','Луцьк','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Михайло Савицький</b><br>
+      Вік: 38<br>
+      Місто: Луцьк<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="степан левчук" onclick="openProfile('Степан Левчук','33','Дніпро','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Степан Левчук</b><br>
+      Вік: 33<br>
+      Місто: Дніпро<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="семен захарчук" onclick="openProfile('Семен Захарчук','33','Чернігів','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Семен Захарчук</b><br>
+      Вік: 33<br>
+      Місто: Чернігів<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="тимур литвин" onclick="openProfile('Тимур Литвин','23','Київ','У розшуку','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Тимур Литвин</b><br>
+      Вік: 23<br>
+      Місто: Київ<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="остап івашко" onclick="openProfile('Остап Івашко','22','Дніпро','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Остап Івашко</b><br>
+      Вік: 22<br>
+      Місто: Дніпро<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="макар онищук" onclick="openProfile('Макар Онищук','43','Луцьк','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Макар Онищук</b><br>
+      Вік: 43<br>
+      Місто: Луцьк<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="тимур онищук" onclick="openProfile('Тимур Онищук','38','Івано-Франківськ','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Тимур Онищук</b><br>
+      Вік: 38<br>
+      Місто: Івано-Франківськ<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="леон мусаєв" onclick="openProfile('Леон Мусаєв','30','Вінниця','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Леон Мусаєв</b><br>
+      Вік: 30<br>
+      Місто: Вінниця<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="семен івашко" onclick="openProfile('Семен Івашко','28','Рівне','У розшуку','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Семен Івашко</b><br>
+      Вік: 28<br>
+      Місто: Рівне<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="єлисей марченко" onclick="openProfile('Єлисей Марченко','16','Чернігів','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Єлисей Марченко</b><br>
+      Вік: 16<br>
+      Місто: Чернігів<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="арсен левчук" onclick="openProfile('Арсен Левчук','26','Ужгород','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Арсен Левчук</b><br>
+      Вік: 26<br>
+      Місто: Ужгород<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="ярослав захарчук" onclick="openProfile('Ярослав Захарчук','39','Полтава','У розшуку','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Ярослав Захарчук</b><br>
+      Вік: 39<br>
+      Місто: Полтава<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="михайло кириченко" onclick="openProfile('Михайло Кириченко','28','Черкаси','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Михайло Кириченко</b><br>
+      Вік: 28<br>
+      Місто: Черкаси<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="дмитро литвин" onclick="openProfile('Дмитро Литвин','45','Івано-Франківськ','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Дмитро Литвин</b><br>
+      Вік: 45<br>
+      Місто: Івано-Франківськ<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="антон захарчук" onclick="openProfile('Антон Захарчук','22','Київ','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Антон Захарчук</b><br>
+      Вік: 22<br>
+      Місто: Київ<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="юрій литвин" onclick="openProfile('Юрій Литвин','19','Ужгород','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Юрій Литвин</b><br>
+      Вік: 19<br>
+      Місто: Ужгород<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="семен ткач" onclick="openProfile('Семен Ткач','33','Вінниця','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Семен Ткач</b><br>
+      Вік: 33<br>
+      Місто: Вінниця<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="василь хасанов" onclick="openProfile('Василь Хасанов','18','Луцьк','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Василь Хасанов</b><br>
+      Вік: 18<br>
+      Місто: Луцьк<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="михайло левчук" onclick="openProfile('Михайло Левчук','18','Полтава','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Михайло Левчук</b><br>
+      Вік: 18<br>
+      Місто: Полтава<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="ярослав ткач" onclick="openProfile('Ярослав Ткач','30','Луцьк','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Ярослав Ткач</b><br>
+      Вік: 30<br>
+      Місто: Луцьк<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="леон нечай" onclick="openProfile('Леон Нечай','23','Житомир','У розшуку','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Леон Нечай</b><br>
+      Вік: 23<br>
+      Місто: Житомир<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="богдан онищук" onclick="openProfile('Богдан Онищук','19','Кропивницький','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Богдан Онищук</b><br>
+      Вік: 19<br>
+      Місто: Кропивницький<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="макар литвин" onclick="openProfile('Макар Литвин','35','Суми','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Макар Литвин</b><br>
+      Вік: 35<br>
+      Місто: Суми<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="семен ткач" onclick="openProfile('Семен Ткач','34','Вінниця','У розшуку','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Семен Ткач</b><br>
+      Вік: 34<br>
+      Місто: Вінниця<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="богдан шаповал" onclick="openProfile('Богдан Шаповал','44','Дніпро','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Богдан Шаповал</b><br>
+      Вік: 44<br>
+      Місто: Дніпро<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="ярослав марченко" onclick="openProfile('Ярослав Марченко','36','Вінниця','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Ярослав Марченко</b><br>
+      Вік: 36<br>
+      Місто: Вінниця<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="мирон мусаєв" onclick="openProfile('Мирон Мусаєв','24','Полтава','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Мирон Мусаєв</b><br>
+      Вік: 24<br>
+      Місто: Полтава<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="рустам ткач" onclick="openProfile('Рустам Ткач','40','Вінниця','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Рустам Ткач</b><br>
+      Вік: 40<br>
+      Місто: Вінниця<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="степан хасанов" onclick="openProfile('Степан Хасанов','17','Полтава','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Степан Хасанов</b><br>
+      Вік: 17<br>
+      Місто: Полтава<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="тимур савицький" onclick="openProfile('Тимур Савицький','29','Житомир','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Тимур Савицький</b><br>
+      Вік: 29<br>
+      Місто: Житомир<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="федір ткач" onclick="openProfile('Федір Ткач','20','Кропивницький','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Федір Ткач</b><br>
+      Вік: 20<br>
+      Місто: Кропивницький<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="платон марченко" onclick="openProfile('Платон Марченко','34','Полтава','У розшуку','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Платон Марченко</b><br>
+      Вік: 34<br>
+      Місто: Полтава<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="гліб марченко" onclick="openProfile('Гліб Марченко','43','Вінниця','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Гліб Марченко</b><br>
+      Вік: 43<br>
+      Місто: Вінниця<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="руслан захарчук" onclick="openProfile('Руслан Захарчук','45','Миколаїв','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Руслан Захарчук</b><br>
+      Вік: 45<br>
+      Місто: Миколаїв<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="гліб ткач" onclick="openProfile('Гліб Ткач','28','Рівне','У розшуку','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Гліб Ткач</b><br>
+      Вік: 28<br>
+      Місто: Рівне<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="єлисей каримов" onclick="openProfile('Єлисей Каримов','45','Житомир','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Єлисей Каримов</b><br>
+      Вік: 45<br>
+      Місто: Житомир<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="владислав савицький" onclick="openProfile('Владислав Савицький','18','Харків','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Владислав Савицький</b><br>
+      Вік: 18<br>
+      Місто: Харків<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="петро кириченко" onclick="openProfile('Петро Кириченко','25','Харків','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Петро Кириченко</b><br>
+      Вік: 25<br>
+      Місто: Харків<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="ярослав хасанов" onclick="openProfile('Ярослав Хасанов','39','Чернігів','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Ярослав Хасанов</b><br>
+      Вік: 39<br>
+      Місто: Чернігів<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="дмитро бойко" onclick="openProfile('Дмитро Бойко','26','Суми','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Дмитро Бойко</b><br>
+      Вік: 26<br>
+      Місто: Суми<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="руслан левчук" onclick="openProfile('Руслан Левчук','29','Київ','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Руслан Левчук</b><br>
+      Вік: 29<br>
+      Місто: Київ<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="арсен кириченко" onclick="openProfile('Арсен Кириченко','18','Івано-Франківськ','У розшуку','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Арсен Кириченко</b><br>
+      Вік: 18<br>
+      Місто: Івано-Франківськ<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="михайло ткач" onclick="openProfile('Михайло Ткач','45','Ужгород','У розшуку','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Михайло Ткач</b><br>
+      Вік: 45<br>
+      Місто: Ужгород<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="михайло давиденко" onclick="openProfile('Михайло Давиденко','39','Херсон','У розшуку','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Михайло Давиденко</b><br>
+      Вік: 39<br>
+      Місто: Херсон<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="антон кириченко" onclick="openProfile('Антон Кириченко','27','Луцьк','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Антон Кириченко</b><br>
+      Вік: 27<br>
+      Місто: Луцьк<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="дмитро івашко" onclick="openProfile('Дмитро Івашко','36','Івано-Франківськ','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Дмитро Івашко</b><br>
+      Вік: 36<br>
+      Місто: Івано-Франківськ<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="василь шаповал" onclick="openProfile('Василь Шаповал','37','Чернігів','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Василь Шаповал</b><br>
+      Вік: 37<br>
+      Місто: Чернігів<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="єлисей бойко" onclick="openProfile('Єлисей Бойко','20','Запоріжжя','У розшуку','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Єлисей Бойко</b><br>
+      Вік: 20<br>
+      Місто: Запоріжжя<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="леон панченко" onclick="openProfile('Леон Панченко','33','Дніпро','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Леон Панченко</b><br>
+      Вік: 33<br>
+      Місто: Дніпро<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="іван панченко" onclick="openProfile('Іван Панченко','41','Кропивницький','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Іван Панченко</b><br>
+      Вік: 41<br>
+      Місто: Кропивницький<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="іван савицький" onclick="openProfile('Іван Савицький','30','Дніпро','У розшуку','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Іван Савицький</b><br>
+      Вік: 30<br>
+      Місто: Дніпро<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="мирон панченко" onclick="openProfile('Мирон Панченко','40','Дніпро','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Мирон Панченко</b><br>
+      Вік: 40<br>
+      Місто: Дніпро<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="гліб сорока" onclick="openProfile('Гліб Сорока','36','Рівне','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Гліб Сорока</b><br>
+      Вік: 36<br>
+      Місто: Рівне<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="іван савицький" onclick="openProfile('Іван Савицький','16','Київ','У розшуку','Активний розшук')">
+    <div class="photo"></div>
+    <div>
+      <b>Іван Савицький</b><br>
+      Вік: 16<br>
+      Місто: Київ<br>
+      <small>Активний розшук</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="ігор волошин" onclick="openProfile('Ігор Волошин','18','Львів','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Ігор Волошин</b><br>
+      Вік: 18<br>
+      Місто: Львів<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="арсен панченко" onclick="openProfile('Арсен Панченко','24','Кропивницький','У розшуку','Потребує перевірки')">
+    <div class="photo"></div>
+    <div>
+      <b>Арсен Панченко</b><br>
+      Вік: 24<br>
+      Місто: Кропивницький<br>
+      <small>Потребує перевірки</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+  <div class="card person " data-name="еміль кириченко" onclick="openProfile('Еміль Кириченко','40','Полтава','У розшуку','Місцезнаходження встановлюється')">
+    <div class="photo"></div>
+    <div>
+      <b>Еміль Кириченко</b><br>
+      Вік: 40<br>
+      Місто: Полтава<br>
+      <small>Місцезнаходження встановлюється</small><br>
+      <span class="badge normal">У розшуку</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="container hidden" id="tab-info">
+  <div class="card">
+    <h2>Інформація</h2>
+    <p>Портал призначений для перегляду відомостей про осіб з активним статусом розшуку.</p>
+    <ul>
+      <li>Пошук за ім’ям</li>
+      <li>Категорії за рівнем небезпеки</li>
+      <li>Перегляд профілю</li>
+      <li>Повідомлення інформації електронною поштою</li>
+    </ul>
+    <p><b>Регіон:</b> Україна</p>
+  </div>
+</div>
+
+<div class="container footer">© 2025 rozshuk.ua — Інформаційний портал</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h3 id="m-name"></h3>
+    <p id="m-info"></p>
+    <button class="btn" onclick="showEmailNote()">Повідомити інформацію</button>
+    <button class="btn secondary" onclick="closeModal()">Закрити</button>
+    <div class="note hidden" id="email-note">
+      Надішліть повідомлення на електронну пошту: <b>rozshuk.ua</b>
+    </div>
+  </div>
+</div>
+
+<script>
+setTimeout(()=>document.getElementById('loading').style.display='none',1200);
+function showTab(t){
+  document.getElementById('tab-rozisk').classList.add('hidden');
+  document.getElementById('tab-info').classList.add('hidden');
+  document.getElementById('tab-'+t).classList.remove('hidden');
+}
+function doSearch(){
+  const q=document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.person').forEach(p=>{
+    p.style.display = p.dataset.name.includes(q)?'flex':'none';
+  });
+}
+function openProfile(name,age,city,badge,status){
+  document.getElementById('m-name').innerText=name;
+  document.getElementById('m-info').innerText='Вік: '+age+'\nМісто: '+city+'\nСтатус: '+status+'\nКатегорія: '+badge;
+  document.getElementById('email-note').classList.add('hidden');
+  document.getElementById('modal').style.display='flex';
+}
+function showEmailNote(){
+  document.getElementById('email-note').classList.remove('hidden');
+}
+function closeModal(){document.getElementById('modal').style.display='none';}
+</script>
+
+</body>
+</html>
